@@ -48,7 +48,7 @@ let lowerLegWidth = 0.5;
 let lowerLegHeight = 2.0;
 let upperLegHeight = 3.0;
 let headHeight = 1.5;
-let headWidth = 1.0;
+let headWidth = 2.0;
 
 let numNodes = 10;
 
@@ -315,47 +315,47 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
-    document.getElementById("torso").onchange = function(event) {
+    document.getElementById("torso").onclick = function(event) {
         theta[torsoId] = event.target.value;
         initNodes(torsoId);
     };
-    document.getElementById("head1").onchange = function(event) {
+    document.getElementById("head1").onclick = function(event) {
         theta[head1Id] = event.target.value;
         initNodes(head1Id);
     };
-    document.getElementById("head2").onchange = function(event) {
+    document.getElementById("head2").onclick = function(event) {
         theta[head2Id] = event.target.value;
         initNodes(head2Id);
     };
-    document.getElementById("left-upper-arm").onchange = function(event) {
+    document.getElementById("left-upper-arm").onclick = function(event) {
         theta[leftUpperArmId] = event.target.value;
         initNodes(leftUpperArmId);
     };
-    document.getElementById("left-lower-arm").onchange = function(event) {
+    document.getElementById("left-lower-arm").onclick = function(event) {
         theta[leftLowerArmId] = event.target.value;
         initNodes(leftLowerArmId);
     };
-    document.getElementById("right-upper-arm").onchange = function(event) {
+    document.getElementById("right-upper-arm").onclick = function(event) {
         theta[rightUpperArmId] = event.target.value;
         initNodes(rightUpperArmId);
     };
-    document.getElementById("right-lower-arm").onchange = function(event) {
+    document.getElementById("right-lower-arm").onclick = function(event) {
         theta[rightLowerArmId] = event.target.value;
         initNodes(rightLowerArmId);
     };
-    document.getElementById("left-upper-leg").onchange = function(event) {
+    document.getElementById("left-upper-leg").onclick = function(event) {
         theta[leftUpperLegId] = event.target.value;
         initNodes(leftUpperLegId);
     };
-    document.getElementById("left-lower-leg").onchange = function(event) {
+    document.getElementById("left-lower-leg").onclick = function(event) {
         theta[leftLowerLegId] = event.target.value;
         initNodes(leftLowerLegId);
     };
-    document.getElementById("right-upper-leg").onchange = function(event) {
+    document.getElementById("right-upper-leg").onclick = function(event) {
         theta[rightUpperLegId] = event.target.value;
         initNodes(rightUpperLegId);
     };
-    document.getElementById("right-lower-leg").onchange = function(event) {
+    document.getElementById("right-lower-leg").onclick = function(event) {
         theta[rightLowerLegId] = event.target.value;
         initNodes(rightLowerLegId);
     };
