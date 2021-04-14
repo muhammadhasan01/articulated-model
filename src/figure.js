@@ -37,13 +37,13 @@ let rightUpperLegId = 8;
 let rightLowerLegId = 9;
 
 
-let torsoHeight = 5.0;
+let torsoHeight = 4.0;
 let torsoWidth = 1.0;
-let upperArmHeight = 3.0;
+let upperArmHeight = 2.0;
 let lowerArmHeight = 2.0;
-let upperArmWidth = 0.5;
+let upperArmWidth = 1.0;
 let lowerArmWidth = 0.5;
-let upperLegWidth = 0.5;
+let upperLegWidth = 1.0;
 let lowerLegWidth = 0.5;
 let lowerLegHeight = 2.0;
 let upperLegHeight = 3.0;
