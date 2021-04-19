@@ -42,13 +42,22 @@ void main()
 <script type="text/javascript" src="../common/webgl-utils.js"></script>
 <script type="text/javascript" src="../common/initShaders.js"></script>
 <script type="text/javascript" src="../common/MV.js"></script>
-<script type="text/javascript" src="figure.js"></script>
+<script type="text/javascript" src="environment-map.js"></script>
 
 <body>
 <canvas id="gl-canvas" width="512" height="512">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
-
+<div>
+  <label for="load">Load Models</label>
+  <input id="load" type="file" onchange="loadGlobalData();" />
+</div>
+<div>
+  Zoom <input id="zoom" type="range"
+                          min="20" max="30" step="2" value="20"
+/>
+  100
+</div><br/>
 <div>
   torso angle -180 <input id="torso" type="range"
                           min="-180" max="180" step="10" value="0"

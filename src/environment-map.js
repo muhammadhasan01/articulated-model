@@ -38,27 +38,29 @@ let rightUpperLegId = 8;
 let rightLowerLegId = 9;
 
 
-let torsoHeight = 4.0;
-let torsoWidth = 1.0;
-let upperArmHeight = 2.0;
-let lowerArmHeight = 2.0;
-let upperArmWidth = 1.0;
-let lowerArmWidth = 0.5;
-let upperLegWidth = 1.0;
-let lowerLegWidth = 0.5;
-let lowerLegHeight = 2.0;
-let upperLegHeight = 3.0;
-let headHeight = 1.5;
-let headWidth = 2.0;
+let torsoHeight = 0.0;
+let torsoWidth = 0.0;
+let upperArmHeight = 0.0;
+let lowerArmHeight = 0.0;
+let upperArmWidth = 0.0;
+let lowerArmWidth = 0.0;
+let upperLegWidth = 0.0;
+let lowerLegWidth = 0.0;
+let lowerLegHeight = 0.0;
+let upperLegHeight = 0.0;
+let headHeight = 0.0;
+let headWidth = 0.0;
+
+let zoomValue = 0.0;
 
 let numNodes = 10;
 
 let theta = [0, 0, 0, 0, 0, 0, 180, 0, 180, 0, 0];
 let stack = [];
 
-let figure = [];
+let environmentMap = [];
 
-for (let i = 0; i < numNodes; i++) figure[i] = createNode(null, null, null, null);
+for (let i = 0; i < numNodes; i++) environmentMap[i] = createNode(null, null, null, null);
 
 let pointsArray = [];
 let normalsArray = [];
@@ -89,7 +91,7 @@ function initNodes(Id) {
         case torsoId:
 
             m = rotate(theta[torsoId], 0, 1, 0);
-            figure[torsoId] = createNode(m, torso, null, headId);
+            environmentMap[torsoId] = createNode(m, torso, null, headId);
             break;
 
         case headId:
@@ -101,7 +103,7 @@ function initNodes(Id) {
             m = mult(m, rotate(theta[head1Id], 1, 0, 0))
             m = mult(m, rotate(theta[head2Id], 0, 1, 0));
             m = mult(m, translate(0.0, -0.5 * headHeight, 0.0));
-            figure[headId] = createNode(m, head, leftUpperArmId, null);
+            environmentMap[headId] = createNode(m, head, leftUpperArmId, null);
             break;
 
 
@@ -109,56 +111,56 @@ function initNodes(Id) {
 
             m = translate(-(torsoWidth + upperArmWidth), 0.9 * torsoHeight, 0.0);
             m = mult(m, rotate(theta[leftUpperArmId], 1, 0, 0));
-            figure[leftUpperArmId] = createNode(m, leftUpperArm, rightUpperArmId, leftLowerArmId);
+            environmentMap[leftUpperArmId] = createNode(m, leftUpperArm, rightUpperArmId, leftLowerArmId);
             break;
 
         case rightUpperArmId:
 
             m = translate(torsoWidth + upperArmWidth, 0.9 * torsoHeight, 0.0);
             m = mult(m, rotate(theta[rightUpperArmId], 1, 0, 0));
-            figure[rightUpperArmId] = createNode(m, rightUpperArm, leftUpperLegId, rightLowerArmId);
+            environmentMap[rightUpperArmId] = createNode(m, rightUpperArm, leftUpperLegId, rightLowerArmId);
             break;
 
         case leftUpperLegId:
 
             m = translate(-(torsoWidth + upperLegWidth), 0.1 * upperLegHeight, 0.0);
             m = mult(m, rotate(theta[leftUpperLegId], 1, 0, 0));
-            figure[leftUpperLegId] = createNode(m, leftUpperLeg, rightUpperLegId, leftLowerLegId);
+            environmentMap[leftUpperLegId] = createNode(m, leftUpperLeg, rightUpperLegId, leftLowerLegId);
             break;
 
         case rightUpperLegId:
 
             m = translate(torsoWidth + upperLegWidth, 0.1 * upperLegHeight, 0.0);
             m = mult(m, rotate(theta[rightUpperLegId], 1, 0, 0));
-            figure[rightUpperLegId] = createNode(m, rightUpperLeg, null, rightLowerLegId);
+            environmentMap[rightUpperLegId] = createNode(m, rightUpperLeg, null, rightLowerLegId);
             break;
 
         case leftLowerArmId:
 
             m = translate(0.0, upperArmHeight, 0.0);
             m = mult(m, rotate(theta[leftLowerArmId], 1, 0, 0));
-            figure[leftLowerArmId] = createNode(m, leftLowerArm, null, null);
+            environmentMap[leftLowerArmId] = createNode(m, leftLowerArm, null, null);
             break;
 
         case rightLowerArmId:
 
             m = translate(0.0, upperArmHeight, 0.0);
             m = mult(m, rotate(theta[rightLowerArmId], 1, 0, 0));
-            figure[rightLowerArmId] = createNode(m, rightLowerArm, null, null);
+            environmentMap[rightLowerArmId] = createNode(m, rightLowerArm, null, null);
             break;
 
         case leftLowerLegId:
 
             m = translate(0.0, upperLegHeight, 0.0);
             m = mult(m, rotate(theta[leftLowerLegId], 1, 0, 0));
-            figure[leftLowerLegId] = createNode(m, leftLowerLeg, null, null);
+            environmentMap[leftLowerLegId] = createNode(m, leftLowerLeg, null, null);
             break;
 
         case rightLowerLegId:
 
             m = translate(0.0, upperLegHeight, 0.0);
             m = mult(m, rotate(theta[rightLowerLegId], 1, 0, 0));
-            figure[rightLowerLegId] = createNode(m, rightLowerLeg, null, null);
+            environmentMap[rightLowerLegId] = createNode(m, rightLowerLeg, null, null);
             break;
 
     }
@@ -169,11 +171,11 @@ function traverse(Id) {
 
     if (Id == null) return;
     stack.push(modelViewMatrix);
-    modelViewMatrix = mult(modelViewMatrix, figure[Id].transform);
-    figure[Id].render();
-    if (figure[Id].child != null) traverse(figure[Id].child);
+    modelViewMatrix = mult(modelViewMatrix, environmentMap[Id].transform);
+    environmentMap[Id].render();
+    if (environmentMap[Id].child != null) traverse(environmentMap[Id].child);
     modelViewMatrix = stack.pop();
-    if (figure[Id].sibling != null) traverse(figure[Id].sibling);
+    if (environmentMap[Id].sibling != null) traverse(environmentMap[Id].sibling);
 }
 
 function uniformMatrix() {
@@ -332,7 +334,7 @@ function configureCubeMap() {
 }
 
 
-window.onload = function init() {
+function init() {
 
     canvas = document.getElementById("gl-canvas");
 
@@ -383,6 +385,21 @@ window.onload = function init() {
 
     configureCubeMap();
 
+    document.getElementById("zoom").onclick = function(event) {
+        zoomValue = event.target.value / 20.0;
+        torsoHeight = 4.0 * zoomValue;
+        torsoWidth = 1.0 * zoomValue;
+        upperArmHeight = 2.0 * zoomValue;
+        lowerArmHeight = 2.0 * zoomValue;
+        upperArmWidth = 1.0 * zoomValue;
+        lowerArmWidth = 0.5 * zoomValue;
+        upperLegWidth = 1.0 * zoomValue;
+        lowerLegWidth = 0.5 * zoomValue;
+        lowerLegHeight = 2.0 * zoomValue;
+        upperLegHeight = 3.0 * zoomValue;
+        headHeight = 1.5 * zoomValue;
+        headWidth = 2.0 * zoomValue;
+    };
     document.getElementById("torso").onclick = function(event) {
         theta[torsoId] = event.target.value;
         initNodes(torsoId);
@@ -439,4 +456,37 @@ let render = function() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     traverse(torsoId);
     requestAnimFrame(render);
+}
+
+function changeToLoadFile(file) {
+    let data = JSON.parse(file);
+    torsoHeight = data.torsoHeight;
+    torsoWidth = data.torsoWidth;
+    upperArmHeight = data.upperArmHeight;
+    lowerArmHeight = data.lowerArmHeight;
+    upperArmWidth = data.upperArmWidth;
+    lowerArmWidth = data.lowerArmWidth;
+    upperLegWidth = data.upperLegWidth;
+    lowerLegWidth = data.lowerLegWidth;
+    lowerLegHeight = data.lowerLegHeight;
+    upperLegHeight = data.upperLegHeight;
+    headHeight = data.headHeight;
+    headWidth = data.headWidth;
+    init();
+}
+
+function loadGlobalData() {
+    let input = document.getElementById("load");
+    let files = input.files;
+
+    if (files.length == 0) return;
+
+    const file = files[0];
+
+    let reader = new FileReader();
+
+    reader.onload = (e) => changeToLoadFile(e.target.result);
+    reader.onerror = (e) => alert(e.target.error.name);
+
+    reader.readAsText(file);
 }
