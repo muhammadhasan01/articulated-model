@@ -10,6 +10,7 @@ let modelViewMatrix;
 let instanceMatrix;
 
 let modelViewMatrixLoc;
+let normalViewMatrixLoc;
 
 let vertices = [
     vec4(-0.5, -0.5, 0.5, 1.0),
@@ -59,8 +60,8 @@ let figure = [];
 
 for (let i = 0; i < numNodes; i++) figure[i] = createNode(null, null, null, null);
 
-let vBuffer;
 let pointsArray = [];
+let normalsArray = [];
 
 function scale4(a, b, c) {
     let result = mat4();
@@ -78,7 +79,6 @@ function createNode(transform, render, sibling, child) {
         child: child
     }
 }
-
 
 function initNodes(Id) {
 
@@ -176,91 +176,119 @@ function traverse(Id) {
     if (figure[Id].sibling != null) traverse(figure[Id].sibling);
 }
 
+function uniformMatrix() {
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    let normalMatrix = [
+        vec3(modelViewMatrix[0][0], modelViewMatrix[0][1], modelViewMatrix[0][2]),
+        vec3(modelViewMatrix[1][0], modelViewMatrix[1][1], modelViewMatrix[1][2]),
+        vec3(modelViewMatrix[2][0], modelViewMatrix[2][1], modelViewMatrix[2][2])
+    ];
+    gl.uniformMatrix3fv(normalViewMatrixLoc, false, flatten(normalMatrix));
+}
+
 function torso() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * torsoHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(torsoWidth, torsoHeight, torsoWidth));
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+    uniformMatrix();
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 6 * i, 6);
 }
 
 function head() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * headHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(headWidth, headHeight, headWidth));
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+    uniformMatrix();
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 6 * i, 6);
 }
 
 function leftUpperArm() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * upperArmHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(upperArmWidth, upperArmHeight, upperArmWidth));
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+    uniformMatrix();
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 6 * i, 6);
 }
 
 function leftLowerArm() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * lowerArmHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(lowerArmWidth, lowerArmHeight, lowerArmWidth));
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+    uniformMatrix();
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 6 * i, 6);
 }
 
 function rightUpperArm() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * upperArmHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(upperArmWidth, upperArmHeight, upperArmWidth));
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+    uniformMatrix();
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 6 * i, 6);
 }
 
 function rightLowerArm() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * lowerArmHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(lowerArmWidth, lowerArmHeight, lowerArmWidth));
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+    uniformMatrix();
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 6 * i, 6);
 }
 
 function leftUpperLeg() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * upperLegHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(upperLegWidth, upperLegHeight, upperLegWidth));
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+    uniformMatrix();
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 6 * i, 6);
 }
 
 function leftLowerLeg() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * lowerLegHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(lowerLegWidth, lowerLegHeight, lowerLegWidth));
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+    uniformMatrix();
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 6 * i, 6);
 }
 
 function rightUpperLeg() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * upperLegHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(upperLegWidth, upperLegHeight, upperLegWidth));
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+    uniformMatrix();
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 6 * i, 6);
 }
 
 function rightLowerLeg() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * lowerLegHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(lowerLegWidth, lowerLegHeight, lowerLegWidth))
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
-    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
+    uniformMatrix();
+    for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 6 * i, 6);
 }
 
 function quad(a, b, c, d) {
+    let t1 = subtract(vertices[b], vertices[a]);
+    let t2 = subtract(vertices[c], vertices[a]);
+    let normal = cross(t1, t2);
+    normal[3] = 0.0;
+
     pointsArray.push(vertices[a]);
+    normalsArray.push(normal);
+
     pointsArray.push(vertices[b]);
+    normalsArray.push(normal);
+
     pointsArray.push(vertices[c]);
+    normalsArray.push(normal);
+
+    pointsArray.push(vertices[a]);
+    normalsArray.push(normal);
+
+    pointsArray.push(vertices[c]);
+    normalsArray.push(normal);
+
     pointsArray.push(vertices[d]);
+    normalsArray.push(normal);
 }
 
 
@@ -273,47 +301,87 @@ function cube() {
     quad(5, 4, 0, 1);
 }
 
+function configureCubeMap() {
+    let cubeMap = gl.createTexture();
+    let red = new Uint8Array([0, 0, 0, 255]);
+    let green = new Uint8Array([150, 111, 51, 255]);
+    let blue = new Uint8Array([150, 111, 51, 255]);
+    let cyan = new Uint8Array([150, 111, 51, 255]);
+    let magenta = new Uint8Array([150, 111, 51, 255]);
+    let yellow = new Uint8Array([150, 111, 51, 255]);
+
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubeMap);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA,
+        1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, red);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA,
+        1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, green);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA,
+        1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, blue);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA,
+        1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, cyan);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA,
+        1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, yellow);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA,
+        1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, magenta);
+
+
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.uniform1i(gl.getUniformLocation(program, "texMap"), 0);
+}
+
 
 window.onload = function init() {
 
     canvas = document.getElementById("gl-canvas");
 
-    gl = WebGLUtils.setupWebGL(canvas);
+    gl = WebGLUtils.setupWebGL(canvas, null);
     if (!gl) {
         alert("WebGL isn't available");
     }
 
     gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.clearColor(1.0, 1.0, 1.0, 1.0);
+    gl.clearColor(0.7, 0.7, 0.7, 1.0);
+
+    gl.enable(gl.DEPTH_TEST);
 
     //
     //  Load shaders and initialize attribute buffers
     //
     program = initShaders(gl, "vertex-shader", "fragment-shader");
-
     gl.useProgram(program);
 
     instanceMatrix = mat4();
 
+    cube();
+
     projectionMatrix = ortho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
     modelViewMatrix = mat4();
-
 
     gl.uniformMatrix4fv(gl.getUniformLocation(program, "modelViewMatrix"), false, flatten(modelViewMatrix));
     gl.uniformMatrix4fv(gl.getUniformLocation(program, "projectionMatrix"), false, flatten(projectionMatrix));
 
-    modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix")
+    modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
+    normalViewMatrixLoc = gl.getUniformLocation(program, "normalMatrix");
 
-    cube();
+    let nBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(normalsArray), gl.STATIC_DRAW);
 
-    vBuffer = gl.createBuffer();
+    let vNormal = gl.getAttribLocation(program, "vNormal");
+    gl.vertexAttribPointer(vNormal, 4, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vNormal);
 
+    let vBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(pointsArray), gl.STATIC_DRAW);
 
     let vPosition = gl.getAttribLocation(program, "vPosition");
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
+
+    configureCubeMap();
 
     document.getElementById("torso").onclick = function(event) {
         theta[torsoId] = event.target.value;
@@ -362,14 +430,13 @@ window.onload = function init() {
 
     for (let i = 0; i < numNodes; i++)
         initNodes(i);
-    
+
     render();
 }
 
 
 let render = function() {
-
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     traverse(torsoId);
     requestAnimFrame(render);
 }
