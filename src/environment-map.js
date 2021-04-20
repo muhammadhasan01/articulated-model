@@ -38,18 +38,18 @@ let rightUpperLegId = 8;
 let rightLowerLegId = 9;
 
 
-let torsoHeight = 0.0;
-let torsoWidth = 0.0;
-let upperArmHeight = 0.0;
-let lowerArmHeight = 0.0;
-let upperArmWidth = 0.0;
-let lowerArmWidth = 0.0;
-let upperLegWidth = 0.0;
-let lowerLegWidth = 0.0;
-let lowerLegHeight = 0.0;
-let upperLegHeight = 0.0;
-let headHeight = 0.0;
-let headWidth = 0.0;
+let torsoHeight = 4.0;
+let torsoWidth = 4.5;
+let upperArmHeight = 1.5;
+let lowerArmHeight = 1.5;
+let upperArmWidth = 1.0;
+let lowerArmWidth = 0.5;
+let upperLegWidth = 1.0;
+let lowerLegWidth = 0.5;
+let lowerLegHeight = 2.0;
+let upperLegHeight = 3.0;
+let headHeight = 1.5;
+let headWidth = 1.5;
 
 let zoomValue = 0.0;
 
@@ -109,28 +109,28 @@ function initNodes(Id) {
 
         case leftUpperArmId:
 
-            m = translate(-(torsoWidth + upperArmWidth), 0.9 * torsoHeight, 0.0);
+            m = translate(-(torsoWidth + upperArmWidth) * 0.5, 0.7 * torsoHeight, 0.0);
             m = mult(m, rotate(theta[leftUpperArmId], 1, 0, 0));
             environmentMap[leftUpperArmId] = createNode(m, leftUpperArm, rightUpperArmId, leftLowerArmId);
             break;
 
         case rightUpperArmId:
 
-            m = translate(torsoWidth + upperArmWidth, 0.9 * torsoHeight, 0.0);
+            m = translate((torsoWidth + upperArmWidth) * 0.5, 0.7 * torsoHeight, 0.0);
             m = mult(m, rotate(theta[rightUpperArmId], 1, 0, 0));
             environmentMap[rightUpperArmId] = createNode(m, rightUpperArm, leftUpperLegId, rightLowerArmId);
             break;
 
         case leftUpperLegId:
 
-            m = translate(-(torsoWidth + upperLegWidth), 0.1 * upperLegHeight, 0.0);
+            m = translate(-(torsoWidth + upperLegWidth) * 0.2, 0.01 * upperLegHeight, 0.0);
             m = mult(m, rotate(theta[leftUpperLegId], 1, 0, 0));
             environmentMap[leftUpperLegId] = createNode(m, leftUpperLeg, rightUpperLegId, leftLowerLegId);
             break;
 
         case rightUpperLegId:
 
-            m = translate(torsoWidth + upperLegWidth, 0.1 * upperLegHeight, 0.0);
+            m = translate((torsoWidth + upperLegWidth) * 0.2, 0.01 * upperLegHeight, 0.0);
             m = mult(m, rotate(theta[rightUpperLegId], 1, 0, 0));
             environmentMap[rightUpperLegId] = createNode(m, rightUpperLeg, null, rightLowerLegId);
             break;
@@ -305,12 +305,12 @@ function cube() {
 
 function configureCubeMap() {
     let cubeMap = gl.createTexture();
-    let red = new Uint8Array([0, 0, 0, 255]);
-    let green = new Uint8Array([150, 111, 51, 255]);
-    let blue = new Uint8Array([150, 111, 51, 255]);
-    let cyan = new Uint8Array([150, 111, 51, 255]);
-    let magenta = new Uint8Array([150, 111, 51, 255]);
-    let yellow = new Uint8Array([150, 111, 51, 255]);
+    let red = new Uint8Array([255, 0, 0, 255]);
+    let green = new Uint8Array([0, 255, 0, 255]);
+    let blue = new Uint8Array([0, 0, 255, 255]);
+    let cyan = new Uint8Array([0, 255, 255, 255]);
+    let magenta = new Uint8Array([255, 0, 255, 255]);
+    let yellow = new Uint8Array([255, 255, 0, 255]);
 
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubeMap);
     gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA,
@@ -334,7 +334,7 @@ function configureCubeMap() {
 }
 
 
-function init() {
+window.onload = function init() {
 
     canvas = document.getElementById("gl-canvas");
 
@@ -472,7 +472,7 @@ function changeToLoadFile(file) {
     upperLegHeight = data.upperLegHeight;
     headHeight = data.headHeight;
     headWidth = data.headWidth;
-    init();
+    render();
 }
 
 function loadGlobalData() {
