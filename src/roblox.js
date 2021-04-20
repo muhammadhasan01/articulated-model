@@ -53,6 +53,7 @@ let headHeight = 2.0;
 let headWidth = 2.0;
 
 let numNodes = 10;
+let zoomValue = 1.0;
 
 let theta = [0, 0, 180, 0, 180, 0, 180, 0, 180, 0, 0];
 let stack = [];
@@ -344,7 +345,7 @@ window.onload = function init() {
 
     instanceMatrix = mat4();
 
-    projectionMatrix = ortho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+    projectionMatrix = ortho(-10.0 * zoomValue, 10.0 * zoomValue, -10.0 * zoomValue, 10.0 * zoomValue, -30.0, 100.0);
     modelViewMatrix = mat4();
 
 
@@ -368,7 +369,10 @@ window.onload = function init() {
       console.log(anim)
     }
 
-
+    document.getElementById("zoom").onclick = function(event) {
+        zoomValue = 50.0 / event.target.value;
+        init();
+    };
     document.getElementById("torso").onclick = function(event) {
         theta[torsoId] = event.target.value;
         initNodes(torsoId);
@@ -484,4 +488,37 @@ let render = function() {
     gl.clear(gl.COLOR_BUFFER_BIT);
     traverse(torsoId);
     requestAnimFrame(render);
+}
+
+function changeToLoadFile(file) {
+    let data = JSON.parse(file);
+    torsoHeight = data.torsoHeight;
+    torsoWidth = data.torsoWidth;
+    upperArmHeight = data.upperArmHeight;
+    lowerArmHeight = data.lowerArmHeight;
+    upperArmWidth = data.upperArmWidth;
+    lowerArmWidth = data.lowerArmWidth;
+    upperLegWidth = data.upperLegWidth;
+    lowerLegWidth = data.lowerLegWidth;
+    lowerLegHeight = data.lowerLegHeight;
+    upperLegHeight = data.upperLegHeight;
+    headHeight = data.headHeight;
+    headWidth = data.headWidth;
+    render();
+}
+
+function loadGlobalData() {
+    let input = document.getElementById("load");
+    let files = input.files;
+
+    if (files.length == 0) return;
+
+    const file = files[0];
+
+    let reader = new FileReader();
+
+    reader.onload = (e) => changeToLoadFile(e.target.result);
+    reader.onerror = (e) => alert(e.target.error.name);
+
+    reader.readAsText(file);
 }
