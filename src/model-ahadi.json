@@ -1,0 +1,14 @@
+{
+  "torsoHeight": 3.0,
+  "torsoWidth": 2.0,
+  "upperArmHeight": 1.5,
+  "lowerArmHeight": 1.5,
+  "upperArmWidth": 1.0,
+  "lowerArmWidth": 1.0,
+  "upperLegWidth": 1.0,
+  "lowerLegWidth": 1.0,
+  "lowerLegHeight": 1.5,
+  "upperLegHeight": 1.5,
+  "headHeight": 2.0,
+  "headWidth": 2.0
+}
