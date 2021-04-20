@@ -3,22 +3,26 @@
 
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute  vec4 vPosition;
+attribute vec2 a_texcoord;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
+varying vec2 v_texcoord;
 
 void main()
 {
     gl_Position = projectionMatrix * modelViewMatrix * vPosition;
+    v_texcoord = a_texcoord;
 }
 </script>
 
 <script id="fragment-shader" type="x-shader/x-fragment">
 precision mediump float;
-
+varying vec2 v_texcoord;
+uniform sampler2D u_texture;
 void main()
 {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = texture2D(u_texture, v_texcoord);
 
 }
 </script>
@@ -33,6 +37,10 @@ void main()
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
 
+<br>
+<button id="animate">Animate</button>
+<br>
+<br>
 <div>
   torso angle -180 <input id="torso" type="range"
                           min="-180" max="180" step="10" value="0"

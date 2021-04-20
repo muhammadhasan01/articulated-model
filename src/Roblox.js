@@ -3,7 +3,7 @@
 let canvas;
 let gl;
 let program;
-
+let anim = false;
 let projectionMatrix;
 let modelViewMatrix;
 
@@ -254,6 +254,7 @@ function rightLowerLeg() {
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5 * lowerLegHeight, 0.0));
     instanceMatrix = mult(instanceMatrix, scale4(lowerLegWidth, lowerLegHeight, lowerLegWidth))
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    // console.log(gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix)));
     for (let i = 0; i < 6; i++) gl.drawArrays(gl.TRIANGLE_FAN, 4 * i, 4);
 }
 
@@ -274,6 +275,52 @@ function cube() {
     quad(5, 4, 0, 1);
 }
 
+function setTexcoords(gl) {
+  gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+
+        // // top rung front
+        32 / 63,  20 / 63,
+        32 / 63,  32 / 63,
+        40 / 63,  32 / 63,
+        32 / 63,  32 / 63,
+
+        40 / 63,  32 / 63,
+        40 / 63,  20 / 63,
+        20 / 63,  20 / 63,
+        20 / 63,  32 / 63,
+
+        28 / 63,  20 / 63,
+        20 / 63,  32 / 63,
+        28 / 63,  32 / 63,
+        28 / 63,  20 / 63,
+
+        20 / 63,  20 / 63,
+        20 / 63,  32 / 63,
+        28 / 63,  20 / 63,
+        20 / 63,  32 / 63,
+
+        28 / 63,  32 / 63,
+        28 / 63,  20 / 63,
+        20 / 63,  20 / 63,
+        20 / 63,  32 / 63,
+
+        28 / 63,  20 / 63,
+        20 / 63,  32 / 63,
+        28 / 63,  32 / 63,
+        28 / 63,  20 / 63,
+
+
+      ]),
+      gl.STATIC_DRAW);
+}
+
+function requestCORSIfNotSameOrigin(img, url) {
+  if ((new URL(url, window.location.href)).origin !== window.location.origin) {
+    img.crossOrigin = "";
+  }
+}
 
 window.onload = function init() {
 
@@ -306,7 +353,6 @@ window.onload = function init() {
     modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix")
 
     cube();
-
     vBuffer = gl.createBuffer();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
@@ -315,6 +361,12 @@ window.onload = function init() {
     let vPosition = gl.getAttribLocation(program, "vPosition");
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
+
+    document.getElementById("animate").onclick = function(event) {
+      anim = !anim
+      console.log(anim)
+    }
+
 
     document.getElementById("torso").onclick = function(event) {
         theta[torsoId] = event.target.value;
@@ -364,12 +416,73 @@ window.onload = function init() {
     for (let i = 0; i < numNodes; i++)
         initNodes(i);
 
+        var texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
+        var textureLocation = gl.getUniformLocation(program, "u_texture");
+        var texcoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
+        // Set Texcoords.
+        setTexcoords(gl);
+
+        // Create a texture.
+        var texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        // Fill the texture with a 1x1 blue pixel.
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+                      new Uint8Array([0, 0, 255, 255]));
+        // Asynchronously load an image
+        var image = new Image();
+        var url = "http://lh3.googleusercontent.com/5CiKtxdRfqhwJ5toxANXdi1CyyYmnrht3rlAl6iyLvDQ6deZ7XvZa5-Vyppu_ZiC35EQfRux6d0cnv0gAiigTA"
+        requestCORSIfNotSameOrigin(image, url);
+        image.src = url;
+        image.addEventListener('load', function() {
+          // Now that the image has loaded make copy it to the texture.
+          gl.bindTexture(gl.TEXTURE_2D, texture);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
+          gl.generateMipmap(gl.TEXTURE_2D);
+        });
+
+        // Turn on the texcoord attribute
+        gl.enableVertexAttribArray(texcoordLocation);
+
+        // bind the texcoord buffer.
+        gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
+
+        // Tell the shader to use texture unit 0 for u_texture
+        gl.uniform1i(textureLocation, 0);
+
+        // Tell the texcoord attribute how to get data out of texcoordBuffer (ARRAY_BUFFER)
+        var size = 2;          // 2 components per iteration
+        var type = gl.FLOAT;   // the data is 32bit floats
+        var normalize = false; // don't normalize the data
+        var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+        var offset = 0;        // start at the beginning of the buffer
+        gl.vertexAttribPointer(
+            texcoordLocation, size, type, normalize, stride, offset);
+
+
     render();
+    console.log(figure)
 }
 
 
 let render = function() {
-
+    let reverse = false
+    if (anim) {
+      theta[torsoId] +=1;
+      initNodes(torsoId);
+      if (theta[torsoId] == 180) {
+        let reverse = true
+      }
+      if (reverse) {
+        theta[torsoId] -=5;
+        console.log("lalalallsdla");
+        initNodes(torsoId);
+        if (theta[torsoId] == -180) {
+          let reverse = false;
+        }
+      }
+      console.log("llallala");
+    }
     gl.clear(gl.COLOR_BUFFER_BIT);
     traverse(torsoId);
     requestAnimFrame(render);
