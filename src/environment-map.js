@@ -51,7 +51,7 @@ let upperLegHeight = 3.0;
 let headHeight = 1.5;
 let headWidth = 1.5;
 
-let zoomValue = 0.0;
+let zoomValue = 1.0;
 
 let numNodes = 10;
 
@@ -344,7 +344,8 @@ window.onload = function init() {
     }
 
     gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.clearColor(0.7, 0.7, 0.7, 1.0);
+    gl.clearColor(0.5, 0.5, 0.5, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     gl.enable(gl.DEPTH_TEST);
 
@@ -358,7 +359,7 @@ window.onload = function init() {
 
     cube();
 
-    projectionMatrix = ortho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+    projectionMatrix = ortho(-10.0 * zoomValue, 10.0 * zoomValue, -10.0 * zoomValue, 10.0 * zoomValue, -30.0, 100.0);
     modelViewMatrix = mat4();
 
     gl.uniformMatrix4fv(gl.getUniformLocation(program, "modelViewMatrix"), false, flatten(modelViewMatrix));
@@ -386,19 +387,8 @@ window.onload = function init() {
     configureCubeMap();
 
     document.getElementById("zoom").onclick = function(event) {
-        zoomValue = event.target.value / 20.0;
-        torsoHeight = 4.0 * zoomValue;
-        torsoWidth = 1.0 * zoomValue;
-        upperArmHeight = 2.0 * zoomValue;
-        lowerArmHeight = 2.0 * zoomValue;
-        upperArmWidth = 1.0 * zoomValue;
-        lowerArmWidth = 0.5 * zoomValue;
-        upperLegWidth = 1.0 * zoomValue;
-        lowerLegWidth = 0.5 * zoomValue;
-        lowerLegHeight = 2.0 * zoomValue;
-        upperLegHeight = 3.0 * zoomValue;
-        headHeight = 1.5 * zoomValue;
-        headWidth = 2.0 * zoomValue;
+        zoomValue = 50.0 / event.target.value;
+        init();
     };
     document.getElementById("torso").onclick = function(event) {
         theta[torsoId] = event.target.value;
