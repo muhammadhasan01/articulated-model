@@ -415,7 +415,7 @@ window.onload = function init() {
     gl.uniform4fv( gl.getUniformLocation(program, "diffuseProduct"),flatten(diffuseProduct));
     gl.uniform4fv( gl.getUniformLocation(program, "normal"),flatten(normal));
     gl.uniform3fv( gl.getUniformLocation(program, "objTangent"),flatten(tangent));
-
+    gl.uniformMatrix3fv( gl.getUniformLocation(program, "normalMatrix"), false, flatten(normalMatrix));
 
     document.getElementById("shading").onclick = function(event) {
         isShadingON = !(isShadingON);
