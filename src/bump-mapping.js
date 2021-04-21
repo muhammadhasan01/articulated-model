@@ -78,6 +78,7 @@ var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
 var materialDiffuse = vec4( 0.7, 0.7, 0.7, 1.0 );
 
 function configureTexture( image ) {
+    if (isShadingON === false) image = []
     var texture = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -114,8 +115,8 @@ let upperLegWidth = 0.2;
 let lowerLegWidth = 0.2;
 let lowerLegHeight = 1.0;
 let upperLegHeight = 1.0;
-let headHeight = 0.0;
-let headWidth = 0.0;
+let headHeight = 1.0;
+let headWidth = 1.0;
 
 let numNodes = 10;
 let zoomValue = 1.0;
@@ -476,53 +477,7 @@ window.onload = function init() {
     for (let i = 0; i < numNodes; i++)
         initNodes(i);
 
-        // let texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
-        // let textureLocation = gl.getUniformLocation(program, "u_texture");
-        // let texcoordBuffer = gl.createBuffer();
-        // gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
-        // // Set Texcoords.
-        // setTexcoords(gl);
-        //
-        // // Create a texture.
-        // let texture = gl.createTexture();
-        // gl.bindTexture(gl.TEXTURE_2D, texture);
-        // // Fill the texture with a 1x1 blue pixel.
-        // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-        //               new Uint8Array([0, 0, 0, 255]));
-        // // Asynchronously load an image
-        // let image = new Image();
-        // let url = "http://lh3.googleusercontent.com/5CiKtxdRfqhwJ5toxANXdi1CyyYmnrht3rlAl6iyLvDQ6deZ7XvZa5-Vyppu_ZiC35EQfRux6d0cnv0gAiigTA"
-        // if (isShadingON === false) url = '';
-        // requestCORSIfNotSameOrigin(image, url);
-        // image.src = url;
-        // image.addEventListener('load', function() {
-        //   // Now that the image has loaded make copy it to the texture.
-        //   gl.bindTexture(gl.TEXTURE_2D, texture);
-        //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
-        //   gl.generateMipmap(gl.TEXTURE_2D);
-        // });
-        //
-        // // Turn on the texcoord attribute
-        // gl.enableVertexAttribArray(texcoordLocation);
-        //
-        // // bind the texcoord buffer.
-        // gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
-        //
-        // // Tell the shader to use texture unit 0 for u_texture
-        // gl.uniform1i(textureLocation, 0);
-        //
-        // // Tell the texcoord attribute how to get data out of texcoordBuffer (ARRAY_BUFFER)
-        // let size = 2;          // 2 components per iteration
-        // let type = gl.FLOAT;   // the data is 32bit floats
-        // let normalize = false; // don't normalize the data
-        // let stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-        // let offset = 0;        // start at the beginning of the buffer
-        // gl.vertexAttribPointer(
-        //     texcoordLocation, size, type, normalize, stride, offset);
-
-
     render();
-    console.log(figure)
 }
 
 
