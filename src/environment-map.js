@@ -54,7 +54,7 @@ let headWidth = 2.0;
 let zoomValue = 1.0;
 let anim = false;
 let reverse = false;
-let isShadingON = false;
+let isShadingON = true;
 
 let numNodes = 10;
 
