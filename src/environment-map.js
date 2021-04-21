@@ -38,7 +38,7 @@ let rightUpperLegId = 8;
 let rightLowerLegId = 9;
 
 
-let torsoHeight = 4.0;
+let torsoHeight = 3.5;
 let torsoWidth = 4.5;
 let upperArmHeight = 1.5;
 let lowerArmHeight = 1.5;
@@ -49,9 +49,11 @@ let lowerLegWidth = 0.5;
 let lowerLegHeight = 2.0;
 let upperLegHeight = 3.0;
 let headHeight = 1.5;
-let headWidth = 1.5;
+let headWidth = 2.0;
 
 let zoomValue = 1.0;
+let anim = false;
+let reverse = false;
 let isShadingON = false;
 
 let numNodes = 10;
@@ -389,7 +391,9 @@ window.onload = function init() {
     gl.enableVertexAttribArray(vPosition);
 
     configureCubeMap();
-
+    document.getElementById("animate").onclick = function(event) {
+        anim = !anim
+    }
     document.getElementById("shading").onclick = function(event) {
         isShadingON = !(isShadingON);
         init();
@@ -451,6 +455,20 @@ window.onload = function init() {
 
 
 let render = function() {
+    if (anim) {
+        theta[torsoId]++;
+        initNodes(torsoId);
+        if (theta[torsoId] == 180) {
+            reverse = true
+        }
+        if (reverse) {
+            theta[torsoId] -= 5;
+            initNodes(torsoId);
+            if (theta[torsoId] == -180) {
+                reverse = false;
+            }
+        }
+    }
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     traverse(torsoId);
     requestAnimFrame(render);
