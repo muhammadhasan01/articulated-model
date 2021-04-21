@@ -5,6 +5,7 @@ let gl;
 let program;
 let anim = false;
 let reverse = false;
+let isShadingON = true;
 let projectionMatrix;
 let modelViewMatrix;
 
@@ -364,11 +365,13 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
+    document.getElementById("shading").onclick = function(event) {
+        isShadingON = !(isShadingON);
+        init();
+    };
     document.getElementById("animate").onclick = function(event) {
-      anim = !anim
-      console.log(anim)
+        anim = !anim
     }
-
     document.getElementById("zoom").onclick = function(event) {
         zoomValue = 50.0 / event.target.value;
         init();
@@ -421,22 +424,23 @@ window.onload = function init() {
     for (let i = 0; i < numNodes; i++)
         initNodes(i);
 
-        var texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
-        var textureLocation = gl.getUniformLocation(program, "u_texture");
-        var texcoordBuffer = gl.createBuffer();
+        let texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
+        let textureLocation = gl.getUniformLocation(program, "u_texture");
+        let texcoordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
         // Set Texcoords.
         setTexcoords(gl);
 
         // Create a texture.
-        var texture = gl.createTexture();
+        let texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         // Fill the texture with a 1x1 blue pixel.
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-                      new Uint8Array([0, 0, 255, 255]));
+                      new Uint8Array([0, 0, 0, 255]));
         // Asynchronously load an image
-        var image = new Image();
-        var url = "http://lh3.googleusercontent.com/5CiKtxdRfqhwJ5toxANXdi1CyyYmnrht3rlAl6iyLvDQ6deZ7XvZa5-Vyppu_ZiC35EQfRux6d0cnv0gAiigTA"
+        let image = new Image();
+        let url = "http://lh3.googleusercontent.com/5CiKtxdRfqhwJ5toxANXdi1CyyYmnrht3rlAl6iyLvDQ6deZ7XvZa5-Vyppu_ZiC35EQfRux6d0cnv0gAiigTA"
+        if (isShadingON === false) url = '';
         requestCORSIfNotSameOrigin(image, url);
         image.src = url;
         image.addEventListener('load', function() {
@@ -456,11 +460,11 @@ window.onload = function init() {
         gl.uniform1i(textureLocation, 0);
 
         // Tell the texcoord attribute how to get data out of texcoordBuffer (ARRAY_BUFFER)
-        var size = 2;          // 2 components per iteration
-        var type = gl.FLOAT;   // the data is 32bit floats
-        var normalize = false; // don't normalize the data
-        var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-        var offset = 0;        // start at the beginning of the buffer
+        let size = 2;          // 2 components per iteration
+        let type = gl.FLOAT;   // the data is 32bit floats
+        let normalize = false; // don't normalize the data
+        let stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+        let offset = 0;        // start at the beginning of the buffer
         gl.vertexAttribPointer(
             texcoordLocation, size, type, normalize, stride, offset);
 
