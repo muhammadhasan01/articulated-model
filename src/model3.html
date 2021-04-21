@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+varying vec3 L; /* light vector in texture-space coordinates */
+varying vec3 V; /* view vector in texture-space coordinates */
+
+attribute  vec4 vPosition;
+attribute vec2 vTexCoord;
+uniform vec4 normal;
+uniform vec4 lightPosition;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+uniform mat3 normalMatrix;
+uniform vec3 objTangent; /* tangent vector in object coordinates */
+
+varying vec2 fTexCoord;
+
+
+void main()
+{
+  gl_Position = projectionMatrix*modelViewMatrix*vPosition;
+
+  fTexCoord = vTexCoord;
+
+  vec3 eyePosition = (modelViewMatrix*vPosition).xyz;
+  vec3 eyeLightPos = (modelViewMatrix*lightPosition).xyz;
+
+ /* normal, tangent and binormal in eye coordinates */
+
+  vec3 N = normalize(normalMatrix*normal.xyz);
+  vec3 T  = normalize(normalMatrix*objTangent);
+  vec3 B = cross(N, T);
+
+  /* light vector in texture space */
+
+  L.x = dot(T, eyeLightPos-eyePosition);
+  L.y = dot(B, eyeLightPos-eyePosition);
+  L.z = dot(N, eyeLightPos-eyePosition);
+
+  L = normalize(L);
+
+  /* view vector in texture space */
+
+  V.x = dot(T, -eyePosition);
+  V.y = dot(B, -eyePosition);
+  V.z = dot(N, -eyePosition);
+
+  V = normalize(V);
+
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+varying vec3 L;
+varying vec3 V;
+varying vec2 fTexCoord;
+
+uniform sampler2D texMap;
+uniform vec4 diffuseProduct;
+void main()
+{
+  vec4 N = texture2D(texMap, fTexCoord);
+ vec3 NN =  normalize(2.0*N.xyz-1.0);
+ vec3 LL = normalize(L);
+ float Kd = max(dot(NN, LL), 0.0);
+ vec4 ambient = vec4(0.2, 0.2, 0.2, 0.0);
+ gl_FragColor = ambient + vec4(Kd*diffuseProduct.xyz, 1.0);
+
+}
+</script>
+
+<script type="text/javascript" src="../common/webgl-utils.js"></script>
+<script type="text/javascript" src="../common/initShaders.js"></script>
+<script type="text/javascript" src="../common/MV.js"></script>
+<script type="text/javascript" src="model3.js"></script>
+
+<body>
+<canvas id="gl-canvas" width="512" height="512">
+  Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+<div>
+  <label for="load">Load Models</label>
+  <input id="load" type="file" onchange="loadGlobalData();" />
+</div>
+<button id="shading">Switch Shading ON/OFF</button>
+<br>
+<button id="animate">Animate</button>
+<br>
+<br>
+<div>
+  Zoom <input id="zoom" type="range"
+              min="1" max="100" step="2" value="50"
+/>
+  100
+</div><br/>
+<div>
+  torso angle -180 <input id="torso" type="range"
+                          min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+<div>
+  head2 angle -180 <input id="head2" type="range"
+                          min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+
+<div>
+  head1 angle -180 <input id="head1" type="range"
+                          min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+
+<div>
+  left upper arm angle -180 <input id="left-upper-arm" type="range"
+                                   min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+<div>
+  left lower arm angle -180 <input id="left-lower-arm" type="range"
+                                   min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+<div>
+  right upper arm angle -180 <input id="right-upper-arm" type="range"
+                                    min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+<div>
+  right lower arm angle -180 <input id="right-lower-arm" type="range"
+                                    min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+<div>
+  left upper leg angle -180 <input id="left-upper-leg" type="range"
+                                   min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+<div>
+  left lower leg angle -180 <input id="left-lower-leg" type="range"
+                                   min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+<div>
+  right upper leg angle -180 <input id="right-upper-leg" type="range"
+                                    min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+
+<div>
+  right lower leg angle -180 <input id="right-lower-leg" type="range"
+                                    min="-180" max="180" step="10" value="0"
+/>
+  180
+</div><br/>
+
+</body>
+</html>
