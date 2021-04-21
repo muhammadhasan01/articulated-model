@@ -52,6 +52,7 @@ let headHeight = 1.5;
 let headWidth = 1.5;
 
 let zoomValue = 1.0;
+let isShadingON = false;
 
 let numNodes = 10;
 
@@ -312,6 +313,10 @@ function configureCubeMap() {
     let magenta = new Uint8Array([255, 0, 255, 255]);
     let yellow = new Uint8Array([255, 255, 0, 255]);
 
+    if (isShadingON === false) {
+        red = green = blue = cyan = magenta = yellow = new Uint8Array([0, 0, 0, 255]);
+    }
+
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubeMap);
     gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA,
         1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, red);
@@ -332,7 +337,6 @@ function configureCubeMap() {
     gl.activeTexture(gl.TEXTURE0);
     gl.uniform1i(gl.getUniformLocation(program, "texMap"), 0);
 }
-
 
 window.onload = function init() {
 
@@ -386,6 +390,10 @@ window.onload = function init() {
 
     configureCubeMap();
 
+    document.getElementById("shading").onclick = function(event) {
+        isShadingON = !(isShadingON);
+        init();
+    };
     document.getElementById("zoom").onclick = function(event) {
         zoomValue = 50.0 / event.target.value;
         init();
